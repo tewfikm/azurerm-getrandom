@@ -2,7 +2,7 @@
 Creation of Random seed using osDisk names when randomly generated from Image.
 Output of this template will then be used as a seed by guid ARM function to generate Managed Identity Roles.
 
-## UPDATE!!! August 1st, 2017
+## UPDATE!!! May, 2020
 I have blogged about "Providing a GUID function in Azure Resource Manager templates with Azure Functions" that works better than the current template on this repo http://davidjrh.intelequia.com/2017/08/providing-guid-function-in-azure.html 
 
 
@@ -30,7 +30,7 @@ The basic idea is to reference this template in your deployment that will genera
         "properties": { 
           "mode": "incremental", 
           "templateLink": {
-            "uri": "https://raw.githubusercontent.com/davidjrh/azurerm-newguid/master/NewGuid.json",
+            "uri": "https://raw.githubusercontent.com/tewfikm/azurerm-getrandom/master/getRandom.json",
             "contentVersion": "1.0.0.0"
           }
         } 
@@ -39,99 +39,12 @@ The basic idea is to reference this template in your deployment that will genera
   "outputs": {
     "result": {
       "type": "string",
-      "value": "[reference('MyGuid').outputs.guid.value]"
+      "value": "[reference('MyrandomGuid').outputs.osDiskName.value]"
     }
   }
 }
 ```
 
 
-### Getting multiple guids and using them later
-```
-{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [ 
-    { 
-        "apiVersion": "2015-01-01", 
-        "name": "MyGuid0", 
-        "type": "Microsoft.Resources/deployments", 
-        "properties": { 
-          "mode": "incremental", 
-          "templateLink": {
-            "uri": "https://raw.githubusercontent.com/davidjrh/azurerm-newguid/master/NewGuid.json",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "seed": {
-              "value": "0"
-            }
-          }
-        } 
-    },
-    { 
-        "apiVersion": "2015-01-01", 
-        "name": "MyGuid1", 
-        "type": "Microsoft.Resources/deployments", 
-        "properties": { 
-          "mode": "incremental", 
-          "templateLink": {
-            "uri": "https://raw.githubusercontent.com/davidjrh/azurerm-newguid/master/NewGuid.json",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "seed": {
-              "value": "1"
-            }
-          }
-        } 
-    }     
-  ],
-  "outputs": {
-    "result0": {
-      "type": "string",
-      "value": "[reference('MyGuid0').outputs.guid.value]"
-    },
-    "result1": {
-      "type": "string",
-      "value": "[reference('MyGuid1').outputs.guid.value]"
-    }    
-  }
-}
-```
 
-### Creating multiple Guids at once
-
-```
-{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [ 
-    { 
-        "apiVersion": "2015-01-01", 
-        "name": "[concat('MyGuid', copyIndex())]",
-        "type": "Microsoft.Resources/deployments", 
-        "copy": {
-          "name": "guidCopy",
-          "count": 7
-        },        
-        "properties": { 
-          "mode": "incremental", 
-          "templateLink": {
-            "uri": "https://raw.githubusercontent.com/davidjrh/azurerm-newguid/master/NewGuid.json",
-            "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-            "seed": { "value": "[string(copyIndex())]" }
-          }          
-        } 
-    } 
-  ],
-  "outputs": {
-  }
-}
 ```
