@@ -1,0 +1,16 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VMName": {
+            "type": "string"
+        }
+    },
+    "resources": [],
+    "outputs": {
+        "osDiskName": {
+            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines', parameters('VMName')), '2020-06-01', 'Full').properties.storageProfile.osDisk.name]",
+            "type": "string"
+        }
+    }
+}
